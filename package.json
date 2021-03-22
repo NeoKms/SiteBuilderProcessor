@@ -1,0 +1,39 @@
+{
+  "name": "site-builder-api",
+  "version": "1.0.0",
+  "description": "api fro site builder front",
+  "main": "app.js",
+  "scripts": {
+    "dev": "nodemon app.js --ignore 'upload/*",
+    "start": "node app.js",
+    "apidoc": "apidoc -i src/ -o doc/"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "upload/sites/*"
+    ]
+  },
+  "dependencies": {
+    "amqp-connection-manager": "^3.2.2",
+    "amqplib": "^0.7.1",
+    "apidoc": "^0.26.0",
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "cookie": "^0.4.1",
+    "cookie-parser": "^1.4.5",
+    "log4js": "^6.3.0",
+    "mysql": "^2.18.1",
+    "redis": "^3.0.2",
+    "socket.io-client": "^3.1.2",
+    "util": "^0.12.3"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "eslint": "^7.21.0",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-react": "^7.22.0",
+    "nodemon": "^2.0.7"
+  }
+}
