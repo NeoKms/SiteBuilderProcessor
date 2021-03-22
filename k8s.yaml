@@ -31,7 +31,7 @@ spec:
         commitHash: __VERSION__
     spec:
       containers:
-        - image: upachko/site_builder_api:latest
+        - image: upachko/site_builder_processor:latest
           imagePullPolicy: Always
           name: site-processor
           env:
@@ -62,6 +62,17 @@ spec:
                 configMapKeyRef:
                   name: rabbit-default
                   key: HOST
+            #kuber
+            - name: KUBE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: server-type
+                  key: KUBE_URL
+            - name: KUBE_TOKEN
+              valueFrom:
+                configMapKeyRef:
+                  name: server-type
+                  key: KUBE_TOKEN
           ports:
             - containerPort: 3001
               name: http
