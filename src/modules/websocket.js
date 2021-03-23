@@ -8,10 +8,10 @@ let socket = null;
 const getConnection = async function () {
     if (socket) return socket;
     const sessionCookie = await auth();
-    socket = io(config.WEBSOCKER_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
+    socket = io(config.WEBSOCKET_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
 
     socket.on('connect', (data) => {
-        logger.debug('connect to ' + config.WEBSOCKER_HOST + ' success');
+        logger.debug('connect to ' + config.WEBSOCKET_HOST + ' success');
     });
     socket.on('disconnect', () => {
         logger.info('socket disconnect');

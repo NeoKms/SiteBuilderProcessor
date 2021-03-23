@@ -74,7 +74,7 @@ spec:
                   name: server-type
                   key: KUBE_TOKEN
             #wss
-            - name: WEBSOCKER_HOST
+            - name: WEBSOCKET_HOST
               valueFrom:
                 configMapKeyRef:
                   name: wsserver-default

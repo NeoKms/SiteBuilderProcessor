@@ -27,7 +27,7 @@ const API = {
     PASS: env.API_PASSWORD,
 }
 
-const WEBSOCKER_HOST = env.WEBSOCKER_HOST
+const WEBSOCKET_HOST = env.WEBSOCKET_HOST
 
 module.exports = {
     PORT,
@@ -35,5 +35,5 @@ module.exports = {
     PRODUCTION,
     KUBER,
     API,
-    WEBSOCKER_HOST,
+    WEBSOCKET_HOST,
 };
