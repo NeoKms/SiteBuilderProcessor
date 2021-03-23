@@ -73,6 +73,12 @@ spec:
                 configMapKeyRef:
                   name: server-type
                   key: KUBE_TOKEN
+            #wss
+            - name: WEBSOCKER_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: wsserver-default
+                  key: HOST
           ports:
             - containerPort: 3001
               name: http

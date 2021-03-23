@@ -2,7 +2,8 @@ const config = require('../config');
 const logger = require('./logger');
 const rabbitmq = require('./rabbit');
 const { exec } = require("child_process");
-const fs = require('fs')
+const fs = require('fs');
+const ioConnection = require('./websocket');
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -10,8 +11,8 @@ function sleep(ms) {
 
 async function toDataProcessor(msg, data) {
     let json = JSON.parse(msg.content.toString('utf8'));
-    logger.info(json);
-    try {
+    logger.info('toDataProcessor: ',json);
+        try {
         logger.info(`its ${json.type}`)
         const site_id = json.site_id
         const domain = json.domain || 'none'
@@ -39,7 +40,6 @@ async function toDataProcessor(msg, data) {
         }
     } catch (e) {
         logger.error(e)
-        await sleep(5000)
         return this.nack(msg);
     }
     return this.ack(msg);
@@ -52,12 +52,30 @@ function execPromise(cmd) {
         });
     });
 }
+
+async function toBuilder(msg, data) {
+    let json = JSON.parse(msg.content.toString('utf8'));
+    logger.info('toBuilder: ',json);
+    try {
+        await ioConnection.getConnection()
+            .then( ioClient => {
+                ioClient.sendToBuilder(json)
+            })
+    } catch (e) {
+        logger.error(e)
+        return this.nack(msg);
+    }
+    return this.ack(msg);
+}
+
 async function run() {
-    await execPromise(`kubectl config set-cluster k8s --server=${config.KUBER.URL} --insecure-skip-tls-verify=true`)
-    await execPromise(`kubectl config set-credentials admin --token=${config.KUBER.TOKEN}`)
-    await execPromise("kubectl config set-context default --cluster=k8s --user=admin")
-    await execPromise("kubectl config use-context default")
+    let res1 = await execPromise(`kubectl config set-cluster k8s --server=${config.KUBER.URL} --insecure-skip-tls-verify=true`)
+    let res2 = await execPromise(`kubectl config set-credentials admin --token=${config.KUBER.TOKEN}`)
+    let res3 = await execPromise("kubectl config set-context default --cluster=k8s --user=admin")
+    let res4 = await execPromise("kubectl config use-context default")
+    logger.info(res1,res2,res3,res4)
     rabbitmq.createReader('dataProcessor', toDataProcessor);
+    rabbitmq.createReader('builder',toBuilder)
 }
 
 run()

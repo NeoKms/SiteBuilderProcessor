@@ -21,9 +21,19 @@ const RABBIT = {
     QUERIES: {},
 };
 
+const API = {
+    HOST: env.API_HOST,
+    LOGIN: env.API_LOGIN,
+    PASS: env.API_PASSWORD,
+}
+
+const WEBSOCKER_HOST = env.WEBSOCKER_HOST
+
 module.exports = {
     PORT,
     RABBIT,
     PRODUCTION,
-    KUBER
+    KUBER,
+    API,
+    WEBSOCKER_HOST,
 };
