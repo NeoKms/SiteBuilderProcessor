@@ -35,8 +35,16 @@ async function toDataProcessor(msg, data) {
                 })
             logger.debug(res)
         } else if (json.type === 'update') {
-            let res = await execPromise(`kubectl exec -i $(kubectl get po -n site-builder-${site_id}| grep reporter| awk '{print $1}') -- php -f /var/www/build.php`)
-            logger.debug(res)
+            await execPromise(`kubectl exec -i $(kubectl get po -n site-builder-${site_id}| grep reporter| awk '{print $1}') -- php -f /var/www/build.php`)
+                .then(resexec => {
+                    logger.debug(resexec)
+                    return ioConnection.getConnection()
+                })
+                .then( ioClient => ioClient.sendToBuilder({
+                    site_id,
+                    status: 'deleted',
+                    error: 'Сайт снят с публикации'
+                }))
         }
     } catch (e) {
         logger.error(e)
