@@ -29,6 +29,16 @@ async function toDataProcessor(msg, data) {
             )
             let type = json.type === 'deploy' ? 'apply' : 'delete'
             let res = await execPromise(`kubectl ${type} -f /var/www/SiteBuilderProcessor/src/k8s/${k8s_name}`)
+                .then( result =>  ioConnection.getConnection())
+                .then(ioClient => {
+                    if (json.type === 'delete') {
+                        ioClient.sendToBuilder({
+                            site_id,
+                            status: 'deleted',
+                            error: 'Сайт снят с публикации'
+                        })
+                    }
+                })
                 .catch(async err => {
                     await execPromise(`rm /var/www/SiteBuilderProcessor/src/k8s/${k8s_name}`)
                     throw err
@@ -42,8 +52,8 @@ async function toDataProcessor(msg, data) {
                 })
                 .then( ioClient => ioClient.sendToBuilder({
                     site_id,
-                    status: 'deleted',
-                    error: 'Сайт снят с публикации'
+                    status: 'success',
+                    error: 'Сайт в процессе обновления'
                 }))
         }
     } catch (e) {
