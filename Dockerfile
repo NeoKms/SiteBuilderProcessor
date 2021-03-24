@@ -24,6 +24,11 @@ RUN cd /var \
 #nodemon
 RUN npm install pm2@latest -g
 
+RUN apt-get update && mkdir -p /etc/apt/sources.list.d \
+    && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - \
+    && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update && apt-get install -y kubectl=1.18.0-00 && apt-mark hold kubectl
+
 EXPOSE ${PORT} 23
 
 CMD ["/usr/bin/supervisord"]
