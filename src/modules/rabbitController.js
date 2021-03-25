@@ -40,7 +40,7 @@ async function toDataProcessor(msg, data) {
                     }
                 })
                 .catch(async err => {
-                    await execPromise(`rm /var/www/SiteBuilderProcessor/src/k8s/${k8s_name}`).catch(err=>err)
+                    await execPromise(`rm /var/SiteBuilderProcessor/src/k8s/${k8s_name}`).catch(err=>err)
                     throw err
                 })
             logger.debug(res)
