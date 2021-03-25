@@ -28,7 +28,7 @@ async function toDataProcessor(msg, data) {
                     .replace(/__VERSION__/g,k8s_name)
             )
             let type = json.type === 'deploy' ? 'apply' : 'delete'
-            let res = await execPromise(`kubectl ${type} -f /var/www/SiteBuilderProcessor/src/k8s/${k8s_name}`)
+            let res = await execPromise(`kubectl ${type} -f /var/SiteBuilderProcessor/src/k8s/${k8s_name}`)
                 .then( result =>  ioConnection.getConnection())
                 .then(ioClient => {
                     if (json.type === 'delete') {
@@ -40,7 +40,7 @@ async function toDataProcessor(msg, data) {
                     }
                 })
                 .catch(async err => {
-                    await execPromise(`rm /var/www/SiteBuilderProcessor/src/k8s/${k8s_name}`).catch(err=>err)
+                    await execPromise(`rm /var/SiteBuilderProcessor/src/k8s/${k8s_name}`).catch(err=>err)
                     throw err
                 })
             logger.debug(res)
