@@ -51,6 +51,21 @@ spec:
                 configMapKeyRef:
                   name: processor-default
                   key: PORT
+            - name: API_LOGIN
+              valueFrom:
+                configMapKeyRef:
+                  name: processor-default
+                  key: LOGIN
+            - name: API_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: processor-default
+                  key: PASSWORD
+            - name: API_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: api-default
+                  key: HOST
             #rabbit
             - name: RABBIT_USER
               valueFrom:
