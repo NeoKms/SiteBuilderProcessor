@@ -45,7 +45,7 @@ async function toDataProcessor(msg, data) {
                 })
             logger.debug(res)
         } else if (json.type === 'update') {
-            await execPromise(`kubectl exec -i $(kubectl get po -n site-builder-${site_id}| grep reporter| awk '{print $1}') -- php -f /var/www/build.php`)
+            await execPromise(`kubectl exec -i $(kubectl get po -n default| grep site-builder-${site_id}| awk '{print $1}') -- php -f /var/www/build.php`)
                 .then(resexec => {
                     logger.debug(resexec)
                     return ioConnection.getConnection()
