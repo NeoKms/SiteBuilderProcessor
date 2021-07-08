@@ -1,0 +1,26 @@
+version: "3.3"
+services:
+  site___SITE_ID__:
+    container_name: site___SITE_ID__
+    image: upachko/site_builder_builder:arm7
+    restart: always
+    ports:
+      - "301__PORT__:80"
+    environment:
+      PRODUCTION: "true"
+      PREVIEW_URL: https://preview.jrgreez.ru/
+      KUBE_IP: __NOW_IP__
+      COOKIE_DOMAIN: .jrgreez.ru
+      SITE_ID: __SITE_ID__
+      API_HOST_NAME: https://api.jrgreez.ru/
+      APP_PATH: /var/www/
+      WWW_PATH: /var/www/html/
+      API_PASS: root
+      API_LOGIN: root
+      RABBIT_USER: root:JSfhkgs78yadkH
+      RABBIT_HOST: rabbit
+      AUTH_KEY: 8fea39d82cfaae83ed954e7f8e821a3c981c6e854ad2155fc2a86f7d01a8fa52
+networks:
+  default:
+    external:
+      name: sitrbuilder

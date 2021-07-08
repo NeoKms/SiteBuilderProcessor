@@ -1,6 +1,7 @@
 const {env} = process;
 
 const PRODUCTION = String(env.PRODUCTION || false).toLowerCase() == "true"
+const IS_COMPOSE = String(env.IS_COMPOSE || false).toLowerCase() == "true"
 
 //only dev//
 if (!PRODUCTION) {
@@ -36,4 +37,5 @@ module.exports = {
     KUBER,
     API,
     WEBSOCKET_HOST,
+    IS_COMPOSE
 };
