@@ -19,14 +19,14 @@ async function toDataProcessor(msg, data) {
         const time = Date.now()
         const k8s_name = `k8s_${time}.yaml`
         const domainID = domain.split('.')[0].substr(1,1)
+        let k8s = fs.readFileSync('./src/k8s/site_template.yml', 'utf-8')
+        fs.writeFileSync(
+            './src/k8s/' + k8s_name,
+            k8s
+                .replace(/__SITE_ID__/g, site_id)
+                .replace(/__PORT__/g, domainID)
+        )
         if (json.type === 'deploy' || json.type === 'delete') {
-            let k8s = fs.readFileSync('./src/k8s/site_template.yml', 'utf-8')
-            fs.writeFileSync(
-                './src/k8s/' + k8s_name,
-                k8s
-                    .replace(/__SITE_ID__/g, site_id)
-                    .replace(/__PORT__/g, domainID)
-            )
             let type = json.type === 'deploy' ? 'up -d' : 'down'
             let res = await execPromise(`docker-compose -f /var/SiteBuilderProcessor/src/k8s/${k8s_name} ${type}`)
                 .then(result => ioConnection.getConnection())
@@ -41,7 +41,6 @@ async function toDataProcessor(msg, data) {
                         return execPromise(`docker exec -it site_${site_id} bash -c 'sh /var/www/build.sh'`)
                     }
                 })
-                .finally(() => execPromise(`rm /var/processor/src/k8s/${k8s_name}`).catch(err => err))
             logger.debug(res)
         } else if (json.type === 'update') {
             ioConnection.getConnection()
@@ -53,6 +52,7 @@ async function toDataProcessor(msg, data) {
                 .then(() => execPromise(`docker exec -it site_${site_id} bash -c 'sh /var/www/build.sh'`))
                 .then(resexec => logger.debug(resexec))
         }
+        await execPromise(`rm /var/processor/src/k8s/${k8s_name}`).catch(err => err)
     } catch (e) {
         logger.error(e)
         return this.nack(msg);
