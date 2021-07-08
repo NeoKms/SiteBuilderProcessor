@@ -18,7 +18,10 @@ async function toDataProcessor(msg, data) {
         const domain = json.domain || 'none'
         const time = Date.now()
         const k8s_name = `k8s_${time}.yaml`
-        const domainID = domain.split('.')[0].substr(1,1)
+        let domainID = domain.split('.')[0].substr(1,1)
+        if (domain==='none') {
+            domainID = '8099'
+        }
         let k8s = fs.readFileSync('./src/k8s/site_template.yml', 'utf-8')
         fs.writeFileSync(
             './src/k8s/' + k8s_name,
@@ -38,7 +41,7 @@ async function toDataProcessor(msg, data) {
                             error: 'Сайт снят с публикации'
                         })
                     } else {
-                        return execPromise(`docker exec -it site_${site_id} bash -c 'sh /var/www/build.sh'`)
+                        return execPromise(`docker exec -i site_${site_id} bash -c 'sh /var/www/build.sh'`)
                     }
                 })
             logger.debug(res)
@@ -49,7 +52,7 @@ async function toDataProcessor(msg, data) {
                     status: 'update',
                     text: 'Сайт в процессе обновления'
                 }))
-                .then(() => execPromise(`docker exec -it site_${site_id} bash -c 'sh /var/www/build.sh'`))
+                .then(() => execPromise(`docker exec -i site_${site_id} bash -c 'sh /var/www/build.sh'`))
                 .then(resexec => logger.debug(resexec))
         }
         await execPromise(`rm /var/processor/src/k8s/${k8s_name}`).catch(err => err)
