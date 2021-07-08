@@ -4,6 +4,7 @@ const rabbitmq = require('./rabbit');
 const { exec } = require("child_process");
 const fs = require('fs');
 const ioConnection = require('./websocket');
+const axios = require('axios')
 
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -18,6 +19,7 @@ async function toDataProcessor(msg, data) {
         const domain = json.domain || 'none'
         const time = Date.now()
         const k8s_name = `k8s_${time}.yaml`
+        const now_ip = await axios.get('https://icanhazip.com').then(res=>res.data.toString())
         let domainID = domain.split('.')[0].substr(1,1)
         if (domain==='none') {
             domainID = '8099'
@@ -28,6 +30,7 @@ async function toDataProcessor(msg, data) {
             k8s
                 .replace(/__SITE_ID__/g, site_id)
                 .replace(/__PORT__/g, domainID)
+                .replace(/__NOW_IP__/g, now_ip)
         )
         if (json.type === 'deploy' || json.type === 'delete') {
             let type = json.type === 'deploy' ? 'up -d' : 'down'
