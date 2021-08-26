@@ -7,7 +7,7 @@ let socket = null;
 
 const getConnection = async function () {
     if (socket) return socket;
-    const sessionCookie = await auth();
+    const sessionCookie = await auth(true);
     socket = io(config.WEBSOCKET_HOST, {transports: ['websocket'], extraHeaders: {cookie: sessionCookie}});
 
     socket.on('connect', (data) => {
@@ -15,6 +15,9 @@ const getConnection = async function () {
     });
     socket.on('disconnect', () => {
         logger.info('socket disconnect');
+        socket.close();
+        socket = null
+        getConnection()
     });
     socket.sendToBuilder = function (data) {
         socket.emit('builder', data);
